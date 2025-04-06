@@ -121,7 +121,7 @@ class ParameterFiles():
             print()
             print('loop [hden] (-9;4;' + str(self.resolution[1]) + ')')
             print()
-            print('loop [init "' + self.path + '/' + self.run_name + 'z*.out"] ' + self.z)
+            print('loop [init "' + self.path + '/' + self.run_name + '_z*.out"] ' + self.z)
 
             sys.stdout = stdout
 
@@ -194,6 +194,6 @@ class ParameterFiles():
             print()
             print('loop [hden] (-9;4;' + str(self.resolution[1]) + ')')
             print()
-            print('loop [init "' + self.path + '/' + self.run_name + 'z*.out"] ' + self.z + ' 0.0001e+00')
+            print('loop [init "' + self.path + '/' + self.run_name + '_z*.out"] ' + self.z + ' 0.0001e+00')
             
             sys.stdout = stdout

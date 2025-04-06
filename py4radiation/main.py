@@ -31,6 +31,7 @@ def main():
     if mode == 0:
         print('PHOTOIONISATION + RADIATIVE HEATING & COOLING mode')
 
+        run_name = conf['RADIATION']['run_name']
         redshift = conf['RADIATION']['redshift']
 
         if conf['RADIATION']['sedfile'] != None:
@@ -38,11 +39,10 @@ def main():
             distance = conf['RADIATION']['distance']
             age      = conf['RADIATION']['age']
 
-            sed = SED(sedfile, distance, redshift, age)
+            sed = SED(run_name, sedfile, distance, redshift, age)
             sed.getFile()
 
         cloudypath = conf['RADIATION']['cloudypath']
-        run_name   = conf['RADIATION']['runname']
         elements   = conf['RADIATION']['elements']
         resolution = conf['RADIATION']['resolution']
 
