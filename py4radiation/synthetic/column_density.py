@@ -46,7 +46,7 @@ class ColumnDensity():
         """
         for i in range(len(self.ions)):
             proj = self.ds.proj(self.ions[i] + '_number_density', 'x')
-            arr  = np.array(proj[(self.ions[i] + 'number_density')])
+            arr  = np.array(proj[(self.ions[i] + '_number_density')])
             arr  = np.reshape(arr, (self.shape[1], self.shape[2]))
 
             fig_arr = '\n'.join(['\t'.join(map(str, row)) for row in arr])
@@ -62,7 +62,7 @@ class ColumnDensity():
         """
         for i in range(len(self.ions)):
             proj = self.ds.proj(self.ions[i] + '_number_density', 'y')
-            arr  = np.array(proj[(self.ions[i] + 'number_density')])
+            arr  = np.array(proj[(self.ions[i] + '_number_density')])
             arr  = np.reshape(arr, (self.shape[0], self.shape[2]))
 
             fig_arr = '\n'.join(['\t'.join(map(str, row)) for row in arr])

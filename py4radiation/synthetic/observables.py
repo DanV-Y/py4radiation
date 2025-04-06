@@ -57,7 +57,7 @@ class SyntheticObservables():
         bbox  = np.array([[-shape[0]/2, shape[0]/2], [0, shape[1]], [-shape[2]/2, shape[2]/2]], dtype=int)
 
         data = {
-            ('gas', 'density'): (rho, 'g/c**3'),
+            ('gas', 'density'): (rho, 'g/cm**3'),
             ('gas', 'temperature'): (T, 'K'),
             ('gas', 'metallicity'): (metal, 'Zsun'),
             ('gas', 'velocity_x'): (vx1, 'cm/s'),
@@ -72,11 +72,13 @@ class SyntheticObservables():
         ds = yt.load_uniform_grid(data, shape,
                                   length_unit = (length, 'cm'),
                                   mass_unit = (mass, 'g'),
-                                  velocity_unit = (velocity, 'cm.s'),
+                                  velocity_unit = (velocity, 'cm/s'),
                                   bbox = bbox,
                                   nprocs = 1)
+
+        species = list(ions[:, 0] + [' ', ' '] + ions[:, 2])
         
-        trident.add_ion_fields(ds, ions=ions[:, 0], ftype='gas')
+        trident.add_ion_fields(ds, ions=species, ftype='gas')
 
         self.ds    = ds
         self.shape = shape
@@ -114,7 +116,7 @@ class SyntheticObservables():
         rays.append(spectra.raymaker('r2', [8, 0, 0], [8, self.shape[1], 0]))
         rays.append(spectra.raymaker('r3', [16, 0, 0], [16, self.shape[1], 0]))
 
-        for i in range(1, 4):
+        for i in range(3):
             spectra.getSpectrum(rays[i], 'r' + str(i))
         
         print('Mock absorption spectra DONE')

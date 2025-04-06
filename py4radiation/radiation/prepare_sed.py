@@ -34,7 +34,7 @@ class SED():
     """
 
     def __init__(self, sedfile, distance, z, age=1):
-        self.sed = pd.read_csv(sedfile, sep=r'\s+', header=None)
+        self.sed = pd.read_csv(sedfile, sep=r'\s+', header=None).to_numpy()
         
         self.distance = distance * 3.086e+21
         self.z        = float(z)
@@ -54,11 +54,11 @@ class SED():
 
         """
 
-        wavelength = self.sed[:, 0]
-        nu  = 3.e+8 / (wavelength * 1.e-10)
+        wavelength = self.sed[:, 0].astype(float)
+        frequency  = 3.e+8 / (wavelength * 1.e-10)
         energy = frequency * 4.135667696e-15 / 13.65
 
-        luminosity = self.sed[:, self.age]
+        luminosity = self.sed[:, self.age].astype(float)
         lum = 10**(luminosity) * wavelength**2 / 3.e+18
         j_nu = lum / (4 * np.pi * self.distance**2) 
 

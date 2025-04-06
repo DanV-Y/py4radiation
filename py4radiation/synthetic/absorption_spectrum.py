@@ -29,14 +29,9 @@ class MockSpectra():
     def __init__(self, ds, shape, ions):
         self.ds = ds
         self.shape = shape
-        elements = ions[:, 0]
-        roman    = ions[:, 2]
-
-        species = []
-        for i in range(len(elements)):
-            species.append(elements[i] + ' ' + roman[i])
-
-        self.ions = species
+        self.ds = ds
+        self.shape = shape
+        self.ions = list(ions[:, 0] + [' ', ' '] + ions[:, 2])
         self.obs  = './observables/'
 
     def raymaker(self, ray_name, start, end):

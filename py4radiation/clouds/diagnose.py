@@ -27,7 +27,7 @@ class Diagnose():
     """
 
     def __init__(self, fields_sim1, shape, box):
-        self.shape
+        self.shape = shape
         box_x, box_y, box_z = box
 
         x = np.linspace(box_x[0], box_x[1], shape[0])
@@ -39,11 +39,12 @@ class Diagnose():
         self.j3D = [x.reshape(-1, 1, 1), y.reshape(1, -1, 1), z.reshape(1, 1, -1)]
 
         dx = np.max(x) - np.min(x) / shape[0]
-        self.dV = dx**3
+        dV = dx**3
+        self.dV = dV
 
         rho, tr1, _, _, _, _ = fields_sim1
 
-        self.M0 = np.sum(rho * tr1) * divmod
+        self.M0 = np.sum(rho * tr1) * dV
 
     def get_sim_diagnostics(self, fields):
         """
@@ -79,6 +80,6 @@ class Diagnose():
             Number of the simulation to label output files
 
         """
-        cuts = CloudCuts(fields, sinnum, self.shape)
+        cuts = CloudCuts(fields, self.shape, sinnum)
         cuts.get_ncuts()
         cuts.get_vcuts()

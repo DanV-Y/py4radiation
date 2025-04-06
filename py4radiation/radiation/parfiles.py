@@ -42,7 +42,7 @@ class ParameterFiles():
         self.elements   = elements
         self.z          = z
 
-        if resolution != 'LOW' or resolution != 'HIGH':
+        if resolution != 'LOW' and resolution != 'HIGH':
             raise Exception('Set resolution to either LOW or HIGH')
 
         if resolution == 'LOW':
