@@ -76,6 +76,7 @@ class SED():
         """
 
         en, jnu = self.getSED()
+        jnu = np.log10(jnu)
 
         stdout = sys.stdout
         nfile  = run_name + '_z' + self.zn + '.out'
