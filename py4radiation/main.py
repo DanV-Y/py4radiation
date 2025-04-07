@@ -6,13 +6,12 @@ import argparse
 from configparser import ConfigParser
 
 import numpy as np
-import pandas as pd
 
 from .simload import simload
-from radiation.prepare_sed import SED
-from radiation.parfiles import ParameterFiles
-from synthetic.observables import SyntheticObservables
-from clouds.diagnose import Diagnose
+from .radiation.prepare_sed import SED
+from .radiation.parfiles import ParameterFiles
+from .synthetic.observables import SyntheticObservables
+from .clouds.diagnose import Diagnose
 
 def main():
     parser = argparse.ArgumentParser(
@@ -59,8 +58,8 @@ def main():
 
         simpath = conf['SYNTHETIC']['simpath']
         simfile = simpath + conf['SYNTHETIC']['simfile']
-        ions    = pd.read_csv(conf['SYNTHETIC']['ionsfile'], sep=r'\s+', header=None).to_numpy()
-        units   = pd.read_csv(conf['SYNTHETIC']['unitsfile'], sep=r'\s+', header=None).to_numpy()[1]
+        ions    = np.loadtxt(conf['SYNTHETIC']['ionsfile'])
+        units   = np.loadtxt(conf['SYNTHETIC']['unitsfile'])[:, 1]
 
         fields, shape = simload(simfile)
         observables = SyntheticObservables(fields, shape, ions, units)
