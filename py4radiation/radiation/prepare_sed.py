@@ -11,6 +11,10 @@ class SED():
     Prepare SED to Cloudy/CIAOLoop readable files
 
     **Parameters**
+
+    :run_name: string
+
+        Give a name to the current run
     
     :sedfile: string 
         
@@ -33,9 +37,9 @@ class SED():
 
     """
 
-    def __init__(self, sedfile, distance, z, age=1):
+    def __init__(self, run_name, sedfile, distance, z, age=1):
+        self.run_name = run_name
         self.sed = pd.read_csv(sedfile, sep=r'\s+', header=None).to_numpy()
-        
         self.distance = distance * 3.086e+21
         self.z        = float(z)
         self.zn       = z
@@ -72,9 +76,10 @@ class SED():
         """
 
         en, jnu = self.getSED()
+        jnu = np.log10(jnu)
 
         stdout = sys.stdout
-        nfile  = 'SED_z' + self.zn + '.out'
+        nfile  = self.run_name + '_z' + self.zn + '.out'
 
         with open(nfile, 'w') as f:
             sys.stdout = f
