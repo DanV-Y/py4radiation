@@ -79,7 +79,7 @@ class SED():
         jnu = np.log10(jnu)
 
         stdout = sys.stdout
-        nfile  = run_name + '_z' + self.zn + '.out'
+        nfile  = self.run_name + '_z' + self.zn + '.out'
 
         with open(nfile, 'w') as f:
             sys.stdout = f
