@@ -42,13 +42,14 @@ def main():
             sed = SED(run_name, sedfile, distance, redshift, age)
             sed.getFile()
 
-        cloudypath = conf['RADIATION']['cloudypath']
-        elements   = conf['RADIATION']['elements']
-        resolution = conf['RADIATION']['resolution']
-
-        parfiles = ParameterFiles(cloudypath, run_name, elements, redshift, resolution)
-        parfiles.getIonFractions()
-        parfiles.getHeatingCooling()
+        elif conf['RADIATION']['cloudypath'] != None:
+            cloudypath = conf['RADIATION']['cloudypath']
+            elements   = conf['RADIATION']['elements']
+            resolution = conf['RADIATION']['resolution']
+            
+            parfiles = ParameterFiles(cloudypath, run_name, elements, redshift, resolution)
+            parfiles.getIonFractions()
+            parfiles.getHeatingCooling()
 
     elif mode == 1:
         print('SYNTHETIC OBSERVABLES mode')
