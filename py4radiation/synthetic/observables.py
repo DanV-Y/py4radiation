@@ -86,9 +86,7 @@ class SyntheticObservables():
 
         obs_path = './observables/'
 
-        if os.path.isdir(obs_path):
-            None
-        else:
+        if not os.path.isdir(obs_path):
             os.mkdir(obs_path)
 
     def get_column_densities(self):

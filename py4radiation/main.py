@@ -53,9 +53,7 @@ def main():
     elif mode == 1:
         print('SYNTHETIC OBSERVABLES mode')
 
-        if os.path.isdir('./observables/'):
-            None
-        else:
+        if not os.path.isdir('./observables/'):
             os.mkdir('./observables/')
 
         simpath = conf['SYNTHETIC']['simpath']
@@ -71,9 +69,7 @@ def main():
     elif mode == 2:
         print('CLOUDS mode')
 
-        if os.path.isdir('./clouds/'):
-            None
-        else:
+        if not os.path.isdir('./clouds/'):
             os.mkdir('./clouds/')
 
         simpath  = conf['CLOUDS']['simpath']
