@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
-import os
-import sys
 import numpy as np
-import pandas as pd
 
 class SED():
     """
@@ -39,7 +36,7 @@ class SED():
 
     def __init__(self, run_name, sedfile, distance, z, age=1):
         self.run_name = run_name
-        self.sed = pd.read_csv(sedfile, sep=r'\s+', header=None).to_numpy()
+        self.sed = np.loadtxt(sedfile)
         self.distance = distance * 3.086e+21
         self.z        = float(z)
         self.zn       = z
@@ -66,7 +63,7 @@ class SED():
         lum = 10**(luminosity) * wavelength**2 / 3.e+18
         j_nu = lum / (4 * np.pi * self.distance**2) 
 
-        return [energy, j_nu]
+        return energy, j_nu
 
     def getFile(self):
         """
@@ -78,26 +75,27 @@ class SED():
         en, jnu = self.getSED()
         jnu = np.log10(jnu)
 
-        stdout = sys.stdout
         nfile  = self.run_name + '_z' + self.zn + '.out'
 
+        lines = [
+            f'# SED profile at {self.age} Myr',
+            f'# z = {self.zn}',
+            f'# E [Ryd] log10 (J_nu)'
+        ]
+
+        nfactor = None
+
+        for i in range(len(en) - 1, 0, -1):
+            line_text = 'interpolate' if i == (len(en) - 1) else 'continue'
+            lines.append(f'{line_text} ({en[i]:.10f} {jnu[i]:.10f})')
+            if 0.99 <= en[i] <= 1.01:
+                nfactor = jnu[i]
+
+        if nfactor is None:
+            raise ValueError("Error: normalisation factor not found for energy at 1 Ryd")
+        
+        norm = np.log10(4 * np.pi * 10**nfactor)
+        lines.append(f'f(nu) = {norm:.14f} at 1.0000000000 Ryd')
+
         with open(nfile, 'w') as f:
-            sys.stdout = f
-            print(f'# SED profile at {self.age} Myr')
-            print(f'# z = {self.zn}')
-            print('# E [Ryd] log10 (J_nu)')
-
-            for i in range(len(en) - 1, 0, -1):
-                if i == (len(en) - 1):
-                    print('interpolate (' + '{:.10f}'.format(en[i]) + ' ' + '{:.10f}'.format(jnu[i]) + ')', sep='')
-                else:
-                    print('continue (' + '{:.10f}'.format(en[i]) + ' ' + '{:.10f}'.format(jnu[i]) + ')', sep='')
-
-                if 0.99 <= en[i] <= 1.01:
-                    nfactor = jnu[i]
-
-            norm = np.log10(4 * np.pi * 10**nfactor)
-            
-            print('f(nu) = ' + '{:.14f}'.format(norm) + ' at 1.0000000000 Ryd', sep='')
-            sys.stdout = stdout
-
+            f.write('\n'.join(lines))

@@ -14,6 +14,6 @@ Installation is simple::
 See :ref:`step-3`, for more information::
 
     $ python
-    >>> import
+    >>> import py4radiation
 
 

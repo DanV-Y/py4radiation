@@ -9,6 +9,8 @@ https://cphysplus.github.io/
 from .simload import simload
 from .radiation.prepare_sed import SED
 from .radiation.parfiles import ParameterFiles
+from .radiation.ion_tables import IonTables
+from .radiation.hc_rates import HeatingCoolingRates
 from .synthetic.observables import SyntheticObservables
 from .clouds.diagnose import Diagnose
 

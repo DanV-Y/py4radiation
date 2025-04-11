@@ -6,10 +6,10 @@ The py4radiation Module
    :undoc-members:
    :show-inheritance:
 
-Test Module
+Simload
 -----------
 
-.. automodule:: py4radiation.test_module
+.. automodule:: py4radiation.simload
    :members:
    :undoc-members:
    :show-inheritance:

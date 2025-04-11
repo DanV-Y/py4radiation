@@ -6,13 +6,12 @@ import argparse
 from configparser import ConfigParser
 
 import numpy as np
-import pandas as pd
 
 from .simload import simload
-from radiation.prepare_sed import SED
-from radiation.parfiles import ParameterFiles
-from synthetic.observables import SyntheticObservables
-from clouds.diagnose import Diagnose
+from .radiation.prepare_sed import SED
+from .radiation.parfiles import ParameterFiles
+from .synthetic.observables import SyntheticObservables
+from .clouds.diagnose import Diagnose
 
 def main():
     parser = argparse.ArgumentParser(
@@ -42,26 +41,25 @@ def main():
             sed = SED(run_name, sedfile, distance, redshift, age)
             sed.getFile()
 
-        cloudypath = conf['RADIATION']['cloudypath']
-        elements   = conf['RADIATION']['elements']
-        resolution = conf['RADIATION']['resolution']
-
-        parfiles = ParameterFiles(cloudypath, run_name, elements, redshift, resolution)
-        parfiles.getIonFractions()
-        parfiles.getHeatingCooling()
+        elif conf['RADIATION']['cloudypath'] != None:
+            cloudypath = conf['RADIATION']['cloudypath']
+            elements   = conf['RADIATION']['elements']
+            resolution = conf['RADIATION']['resolution']
+            
+            parfiles = ParameterFiles(cloudypath, run_name, elements, redshift, resolution)
+            parfiles.getIonFractions()
+            parfiles.getHeatingCooling()
 
     elif mode == 1:
         print('SYNTHETIC OBSERVABLES mode')
 
-        if os.path.isdir('./observables/'):
-            None
-        else:
+        if not os.path.isdir('./observables/'):
             os.mkdir('./observables/')
 
         simpath = conf['SYNTHETIC']['simpath']
         simfile = simpath + conf['SYNTHETIC']['simfile']
-        ions    = pd.read_csv(conf['SYNTHETIC']['ionsfile'], sep=r'\s+', header=None).to_numpy()
-        units   = pd.read_csv(conf['SYNTHETIC']['unitsfile'], sep=r'\s+', header=None).to_numpy()[1]
+        ions    = np.loadtxt(conf['SYNTHETIC']['ionsfile'])
+        units   = np.loadtxt(conf['SYNTHETIC']['unitsfile'])[:, 1]
 
         fields, shape = simload(simfile)
         observables = SyntheticObservables(fields, shape, ions, units)
@@ -71,9 +69,7 @@ def main():
     elif mode == 2:
         print('CLOUDS mode')
 
-        if os.path.isdir('./clouds/'):
-            None
-        else:
+        if not os.path.isdir('./clouds/'):
             os.mkdir('./clouds/')
 
         simpath  = conf['CLOUDS']['simpath']
