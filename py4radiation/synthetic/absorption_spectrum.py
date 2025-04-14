@@ -26,13 +26,12 @@ class MockSpectra():
 
     """
 
-    def __init__(self, ds, shape, ions):
-        self.ds = ds
-        self.shape = shape
+    def __init__(self, simnum, ds, shape, ions):
+        self.simnum = simnum
         self.ds = ds
         self.shape = shape
         elements = ions[:, 0]
-        self.ions = list(ions[:, 0] + [' ', ' '] + ions[:, 2])
+        self.ions = [f'{row[0]} {row[2]}' for row in ions]
         
         obs = './observables/'
         if not os.path.isdir(obs):
@@ -99,5 +98,5 @@ class MockSpectra():
         for i, ion in enumerate(self.ions):
             spec = trident.SpectrumGenerator(lambda_min=-500, lambda_max=0, dlambda=1, bin_space='velocity')
             spec.make_spectrum(ray, lines=[ion])
-            spec.save_spectrum(self.obs_path[i] + ion + '_ray_' + ray_name + '.dat')
-            print(f'Ion {i} DONE')
+            spec.save_spectrum(self.obs_path[i] + self.simnum + '_' + ion + '_ray_' + ray_name + '.dat')
+            print(f'{ion} DONE for ray {ray_name}')

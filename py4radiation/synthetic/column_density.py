@@ -24,7 +24,8 @@ class ColumnDensity():
 
     """
 
-    def __init__(self, ds, shape, ions):
+    def __init__(self, simnum, ds, shape, ions):
+        self.simnum = simnum
         self.ds = ds
         self.shape = shape
         elements = ions[:, 0]
@@ -64,7 +65,7 @@ class ColumnDensity():
             arr  = np.reshape(arr, (self.shape[1], self.shape[2]))
 
             fig_arr = '\n'.join(['\t'.join(map(str, row)) for row in arr])
-            file_yz = self.obs_path[i] + ion + '_yz.dat'
+            file_yz = self.obs_path[i] + self.simnum + '_' + ion + '_yz.dat'
             with open(file_yz, 'w') as file:
                 file.write(fig_arr)
 
@@ -80,6 +81,6 @@ class ColumnDensity():
             arr  = np.reshape(arr, (self.shape[0], self.shape[2]))
 
             fig_arr = '\n'.join(['\t'.join(map(str, row)) for row in arr])
-            file_xz = self.obs_path[i] + ion + '_xz.dat'
+            file_xz = self.obs_path[i] + self.simnum + '_' + ion + '_xz.dat'
             with open(file_xz, 'w') as file:
                 file.write(fig_arr)

@@ -39,8 +39,7 @@ class SyntheticObservables():
 
     """
 
-    def __init__(self, fields, shape, ions, units):
-
+    def __init__(self, simnum, fields, shape, ions, units):
         mm = 1.660e-24   # 1 amu
         mu = 6.724418e-1 
         kb = 1.380e-16   # Boltzmann constant in cgs
@@ -75,10 +74,11 @@ class SyntheticObservables():
                                   bbox = bbox,
                                   nprocs = 1)
 
-        species = list(ions[:, 0] + [' ', ' '] + ions[:, 2])
+        species = [f'{row[0]} {row[2]}' for row in ions]
         
         trident.add_ion_fields(ds, ions=species, ftype='gas')
 
+        self.simnum = simnum
         self.ds    = ds
         self.shape = shape
         self.ions  = ions
@@ -90,7 +90,7 @@ class SyntheticObservables():
         
         """
 
-        cols = ColumnDensity(self.ds, self.shape, self.ions)
+        cols = ColumnDensity(self.simnum, self.ds, self.shape, self.ions)
         cols.projXZ()
         cols.projYZ()
 
@@ -102,7 +102,7 @@ class SyntheticObservables():
         Get absorption spectra for three default rays
         
         """
-        spectra = MockSpectra(self.ds, self.shape, self.ions)
+        spectra = MockSpectra(self.simnum, self.ds, self.shape, self.ions)
 
         rays = []
         rays.append(spectra.raymaker('r1', [0, 0, 0], [0, self.shape[1], 0]))
