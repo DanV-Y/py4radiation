@@ -10,7 +10,7 @@ import numpy as np
 from py4radiation import simload, SED, ParameterFiles, IonTables, HeatingCoolingRates, SyntheticObservables, Diagnose
 
 def main():
-    parser = argparse.ArgumentPaser(
+    parser = argparse.ArgumentParser(
         prog = 'py4radiation',
         description = 'UV radiation effects (photoionisation and radiative heating/cooling) into wind-cloud simulations'
     )
