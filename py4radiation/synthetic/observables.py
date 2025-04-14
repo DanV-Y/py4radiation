@@ -46,7 +46,6 @@ class SyntheticObservables():
         kb = 1.380e-16   # Boltzmann constant in cgs
 
         rho = fields[0] * units[0]
-        tr1 = fields[1]
         prs = fields[2] * units[1]
         vx1 = fields[3] * units[2]
         vx2 = fields[4] * units[2]
@@ -84,17 +83,13 @@ class SyntheticObservables():
         self.shape = shape
         self.ions  = ions
 
-        obs_path = './observables/'
-
-        if not os.path.isdir(obs_path):
-            os.mkdir(obs_path)
-
     def get_column_densities(self):
         """
 
         Get down-the-barrel and transverse column density maps
         
         """
+
         cols = ColumnDensity(self.ds, self.shape, self.ions)
         cols.projXZ()
         cols.projYZ()

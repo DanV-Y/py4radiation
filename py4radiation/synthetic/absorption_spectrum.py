@@ -31,8 +31,23 @@ class MockSpectra():
         self.shape = shape
         self.ds = ds
         self.shape = shape
+        elements = ions[:, 0]
         self.ions = list(ions[:, 0] + [' ', ' '] + ions[:, 2])
-        self.obs  = './observables/'
+        
+        obs = './observables/'
+        if not os.path.isdir(obs):
+            os.mkdir(obs)
+        self.obs = obs
+
+        elements_paths = []
+        for element in elements:
+            path = obs + element + '/'
+            if not os.path.isdir(path):
+                os.mkdir(path)
+
+            elements_paths.append(path)
+
+        self.obs_path = elements_paths
 
     def raymaker(self, ray_name, start, end):
         """
@@ -81,8 +96,8 @@ class MockSpectra():
 
         """
 
-        for i in self.ions:
+        for i, ion in enumerate(self.ions):
             spec = trident.SpectrumGenerator(lambda_min=-500, lambda_max=0, dlambda=1, bin_space='velocity')
-            spec.make_spectrum(ray, lines=[i])
-            spec.save_spectrum(self.obs + i + '_ray_' + ray_name + '.dat')
+            spec.make_spectrum(ray, lines=[ion])
+            spec.save_spectrum(self.obs_path[i] + ion + '_ray_' + ray_name + '.dat')
             print(f'Ion {i} DONE')

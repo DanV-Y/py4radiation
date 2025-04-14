@@ -26,13 +26,13 @@ class Diagnose():
 
     """
 
-    def __init__(self, fields_sim1, shape, box):
+    def __init__(self, fields_sim1, shape):
         self.shape = shape
-        box_x, box_y, box_z = box
+        box  = np.array([[-shape[0]/2, shape[0]/2], [0, shape[1]], [-shape[2]/2, shape[2]/2]], dtype=int)
 
-        x = np.linspace(box_x[0], box_x[1], shape[0])
-        y = np.linspace(box_y[0], box_y[1], shape[1])
-        z = np.linspace(box_z[0], box_z[1], shape[2])
+        x = np.linspace(box[0, 0], box[0, 1], shape[0])
+        y = np.linspace(box[1, 0], box[1, 1], shape[1])
+        z = np.linspace(box[2, 0], box[2, 1], shape[2])
 
         self.j = [x, y, z]
 
