@@ -50,6 +50,9 @@ def main():
             parfiles.getIonFractions()
             parfiles.getHeatingCooling()
 
+        else:
+            raise ValueError('Error: wrong configuration')
+
     elif mode == 1:
         print('SYNTHETIC OBSERVABLES mode')
 
@@ -94,43 +97,27 @@ def main():
         for j in sinnums:
             simfiles.append(simpath + 'data.' + j + '.dat')
 
-        n_list = []
-        T_list = []
-        fmix_l = []
-        ycm_ls = []
-        xsg_ls = []
-        ysg_ls = []
-        zsg_ls = []
-        vxsgls = []
-        vysgls = []
-        vzsgls = []
+        output_lines = ['n T v vx vy vz fmix x_CM y_CM z_CM x_sg y_sg z_sg vx_sg vy_sg vz_sg']
 
         for k in range(81):
-            fields, _ = simload(simfiles[k])
-            n_av, T_av, fmix, y_cm, j_sg, v_sg = diagnostics.get_sim_diagnostics(fields)
-            n_list.append(n_av)
-            T_list.append(T_av)
-            fmix_l.append(fmix)
-            ycm_ls.append(y_cm)
-            xsg_ls.append(j_sg[0])
-            ysg_ls.append(j_sg[1])
-            zsg_ls.append(j_sg[2])
-            vxsgls.append(v_sg[0])
-            vysgls.append(v_sg[1])
-            vzsgls.append(v_sg[2])
+            if i == 0:
+                fields = fields_sim1
+            else:
+                fields, _ = simload(simfiles[k])
+
+            avs, v_avs, fmix, j_cm, j_sg, v_sg = diagnostics.get_sim_diagnostics(fields)
+
+            output_lines.append('{0:.14e} {0:.14e} {0:.14f} {0:.14e} {0:.14f} {0:.14e} {0:.14f} {0:.14e} {0:.14f} {0:.14e} {0:.14f} {0:.14f} {0:.14f} {0:.14f} {0:.14f} {0:.14f}'.format(avs[0], avs[1], avs[2], v_avs[0], v_avs[1], v_avs[2], fmix, j_cm[0], j_cm[1], j_cm[2], j_sg[0], j_sg[1], j_sg[2], v_sg[0], v_sg[1], v_sg[2]))
 
             diagnostics.get_cuts(fields, sinnums[k])
 
             print(f'Simulation {k + 1} out of 81 done')
 
         nfile = './clouds/' + sim_name + '_diagnostics.dat'
-        stdout = sys.stdout
         with open(nfile, 'w') as f:
-            sys.stdout = f
-            for m in range(81):
-                print('{0:.7E}'.format(n_list[m]) + '  ' + '{0:.7E}'.format(T_list[m]) + '  ' + '{0:.7E}'.format(fmix_l[m]) + '  ' + '{0:.7E}'.format(ycm_ls[m]) + '  ' + '{0:.7E}'.format(xsg_ls[m]) + '  ' + '{0:.7E}'.format(ysg_ls[m]) + '  ' + '{0:.7E}'.format(zsg_ls[m]) + '  ' + '{0:.7E}'.format(vxsgls[m]) + '  ' + '{0:.7E}'.format(vysgls[m]) + '  ' + '{0:.7E}'.format(vzsgls[m]))
-            
-            sys.stdout = stdout
+            f.write('\n'.join(output_lines))
+
+
         print('DIAGNOSE and CUTS done')
 
     else:

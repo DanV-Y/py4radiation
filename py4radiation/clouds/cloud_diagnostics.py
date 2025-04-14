@@ -44,7 +44,7 @@ class CloudDiagnostics():
         rho, tr1, prs, vx, vy, vz = fields
 
         n = rho * tr1 / (self.mm * self.mu)
-        T = prs * tr1 / (n * self.kb)
+        T = prs * tr1 * self.mu * self.mm / (rho * self.kb)
         v = np.sqrt(vx**2 + vy**2 + vz**2) * tr1
 
         M = np.sum(rho * tr1) * self.dV
@@ -54,10 +54,21 @@ class CloudDiagnostics():
 
         n_av = mwav(n)
         T_av = mwav(T)
-        y_cm = mwav(self.j3D[1])
+        v_av = mwav(v)
+        avs = [n_av, T_av, v_av]
+
+        vx_av = mwav(vx)
+        vy_av = mwav(vy)
+        vz_av = mwav(vz)
+        v_avs = [vx_av, vy_av, vz_av]
 
         mask = np.where((tr1 >= 0.01) & (tr1 <= 0.99), tr1, 0)
         fmix = np.sum(rho * mask) * self.dV / self.M0
+
+        x_cm = mwav(self.j3D[0])
+        y_cm = mwav(self.j3D[1])
+        z_cm = mwav(self.j3D[2])
+        j_cm = [x_cm, y_cm, z_cm]
 
         def sigma(var):
             s  = mwav(var)
@@ -80,4 +91,4 @@ class CloudDiagnostics():
         vz_sg = sigma(vz)
         v_sg = [vx_sg, vy_sg, vz_sg]
 
-        return n_av, T_av, fmix, y_cm, j_sg, v_sg
+        return avs, v_avs, fmix, j_cm, j_sg, v_sg
