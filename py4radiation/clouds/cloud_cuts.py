@@ -59,7 +59,7 @@ class CloudCuts():
         v = self.v
         vz0 = v[:, :, self.cut]
 
-        vfile = self.clouds + 'vcut_' + self.nsim + '.dat'
+        vfile = self.clouds + 'vcut_' + str(self.nsim) + '.dat'
         v_arr = '\n'.join(['\t'.join(map(str, row)) for row in vz0])
         with open(vfile, 'w') as fv:
             fv.write(v_arr)
