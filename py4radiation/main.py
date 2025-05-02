@@ -136,8 +136,6 @@ def main():
         ions    = np.genfromtxt(c['ANALYSIS']['ionsfile'], dtype=None)
         units   = np.genfromtxt(c['ANALYSIS']['unitsfile'], dtype=None)[:, 1]
 
-        output_lines = ['n T v vx vy vz fmix x_CM y_CM z_CM x_sg y_sg z_sg vx_sg vy_sg vz_sg']
-
         if not os.path.isdir('./observables/'):
             os.mkdir('./observables/')
 
@@ -156,8 +154,9 @@ def main():
         print('FIRST SIMULATION LOADED')
         
         if rank == 0:
+            output_lines = ['n T v vx vy vz fmix x_CM y_CM z_CM x_sg y_sg z_sg vx_sg vy_sg vz_sg']
             fields = fields_1
-            observables = SyntheticObservables(fields, shape, ions, units)
+            observables = SyntheticObservables(sim_nums[0], fields, shape, ions, units)
             observables.get_column_densities()
             observables.get_mock_spectra()
 
@@ -167,14 +166,12 @@ def main():
 
             diagnostics.get_cuts(fields, sim_nums[0])
             print(f'SIMULATION 1 of 81 done')
-        else:
-            output_lines = None
 
         process = [j for j in range(1, 81) if (j - 1) % size == rank]
         local_data = []
         for k in process:
             fields, _ = simload(sim_files[k])
-            observables = SyntheticObservables(fields, shape, ions, units)
+            observables = SyntheticObservables(sim_nums[k], fields, shape, ions, units)
             observables.get_column_densities()
             observables.get_mock_spectra()
             

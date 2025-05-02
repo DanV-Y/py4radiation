@@ -96,7 +96,8 @@ class MockSpectra():
         """
 
         for i, ion in enumerate(self.ions):
+            fname = f"self.obs_path[i]{self.simnum}_{ion.replace(" ", "_")}_ray_{ray_name}.txt"
             spec = trident.SpectrumGenerator(lambda_min=-500, lambda_max=0, dlambda=1, bin_space='velocity')
             spec.make_spectrum(ray, lines=[ion])
-            spec.save_spectrum(self.obs_path[i] + self.simnum + '_' + ion + '_ray_' + ray_name + '.dat')
+            spec.save_spectrum(fname)
             print(f'{ion} DONE for ray {ray_name}')
