@@ -96,7 +96,7 @@ class SyntheticObservables():
 
         print('Column density maps DONE')
 
-    def get_mock_spectra(self):
+    def get_mock_spectra(self, create_rays, raypath, raynum):
         """
 
         Get absorption spectra for three default rays
@@ -104,12 +104,17 @@ class SyntheticObservables():
         """
         spectra = MockSpectra(self.simnum, self.ds, self.shape, self.ions)
 
-        rays = []
-        rays.append(spectra.raymaker('r1', [0, 0, 0], [0, self.shape[1], 0]))
-        rays.append(spectra.raymaker('r2', [8, 0, 0], [8, self.shape[1], 0]))
-        rays.append(spectra.raymaker('r3', [16, 0, 0], [16, self.shape[1], 0]))
+        if create_rays == False:
+            rays = [os.path.join(raypath, f'ray_{i}.h5') for i in range(1, int(raynum + 1))]
+        else:
+            rays = []
+            rays.append(spectra.raymaker('1', [0, 0, 0], [0, self.shape[1], 0]))
+            rays.append(spectra.raymaker('2', [8, 0, 0], [8, self.shape[1], 0]))
+            rays.append(spectra.raymaker('3', [16, 0, 0], [16, self.shape[1], 0]))
 
-        for i in range(3):
-            spectra.getSpectrum(rays[i], 'r' + str(i))
+            raynum = 3
+
+        for i, ray in enumerate(rays):
+            spectra.getSpectrum(ray, str(i + 1))
         
         print('Mock absorption spectra DONE')

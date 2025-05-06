@@ -45,7 +45,7 @@ class CloudCuts():
         n = self.rho / (mm * mu)
         nz0 = n[:, :, self.cut]
 
-        nfile = self.clouds + 'ncut_' + self.nsim + '.dat'
+        nfile = f'{self.clouds}{self.nsim}_ncut.dat'
         n_arr = '\n'.join(['\t'.join(map(str, row)) for row in nz0])
         with open(nfile, 'w') as fn:
             fn.write(n_arr)
@@ -59,7 +59,7 @@ class CloudCuts():
         v = self.v
         vz0 = v[:, :, self.cut]
 
-        vfile = self.clouds + 'vcut_' + str(self.nsim) + '.dat'
+        vfile = f'{self.clouds}{self.nsim}_vcut.dat'
         v_arr = '\n'.join(['\t'.join(map(str, row)) for row in vz0])
         with open(vfile, 'w') as fv:
             fv.write(v_arr)

@@ -36,6 +36,7 @@ class ColumnDensity():
             species.append(elements[i] + '_p' + str(ionnums[i] - 1))
 
         self.ions = species
+        self.ionlabels = [f'{row[0]}{row[2]}' for row in ions]
 
         obs = './observables/'
 
@@ -65,7 +66,7 @@ class ColumnDensity():
             arr  = np.reshape(arr, (self.shape[1], self.shape[2]))
 
             fig_arr = '\n'.join(['\t'.join(map(str, row)) for row in arr])
-            file_yz = self.obs_path[i] + self.simnum + '_' + ion + '_yz.dat'
+            file_yz = self.obs_path[i] + self.simnum + '_' + self.ionlabels[i] + '_coldens_yz.dat'
             with open(file_yz, 'w') as file:
                 file.write(fig_arr)
 
@@ -81,6 +82,6 @@ class ColumnDensity():
             arr  = np.reshape(arr, (self.shape[0], self.shape[2]))
 
             fig_arr = '\n'.join(['\t'.join(map(str, row)) for row in arr])
-            file_xz = self.obs_path[i] + self.simnum + '_' + ion + '_xz.dat'
+            file_xz = self.obs_path[i] + self.simnum + '_' + self.ionlabels[i] + '_coldens_xz.dat'
             with open(file_xz, 'w') as file:
                 file.write(fig_arr)
