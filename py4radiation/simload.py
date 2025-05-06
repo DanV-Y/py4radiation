@@ -6,7 +6,7 @@ import numpy as np
 def simload(filename):
     """
 
-    Load a VTK simulation file and obtain FIELDS and DIMENSIONS (shape)
+    Load a VTK simulation file and obtain FIELDS and SHAPE (dimension)
 
     **Parameters**
 
