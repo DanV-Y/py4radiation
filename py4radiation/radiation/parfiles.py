@@ -14,7 +14,7 @@ class ParameterFiles():
 
     :cloudypath: string
 
-        Path to Cloudy C13.0 executable
+        Path to Cloudy C13.5 executable
 
     :run_name: string
 

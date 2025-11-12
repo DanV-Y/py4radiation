@@ -96,6 +96,7 @@ class SED():
         
         norm = np.log10(4 * np.pi * 10**nfactor)
         lines.append(f'f(nu) = {norm:.14f} at 1.0000000000 Ryd')
+        lines.append('')
 
         with open(nfile, 'w') as f:
             f.write('\n'.join(lines))
