@@ -102,7 +102,7 @@ class SED:
 
     def get_sed(self) -> tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
         """
-        Calculates Energy (Ryd) and Intensity (J_nu).
+        Calculates Energy (Ryd) and Flux (F_nu).
 
         Returns
         -------

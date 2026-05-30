@@ -3,12 +3,13 @@
 import numpy as np
 
 import logging
+
 from pathlib import Path
 from numpy.typing import NDArray
 
 logger = logging.getLogger(__name__)
 
-class HeatingCoolingTable:
+class HeatingCoolingTables:
     """
     A class to process and format heating and cooling tables for HD/MHD codes.
 
@@ -41,22 +42,29 @@ class HeatingCoolingTable:
 
     def _process_map(self, map_path: Path, hden_log: float) -> NDArray[np.float64]:
         """
-        Helper to load a single map and format it as a (N, 4) array.
+        Load a single map and format it as a (N, 4) array.
         """
         raw_data = np.loadtxt(map_path, comments='#', ndmin=2)
 
-        if raw.ndim != 2 or raw.shape[1] < 3:
-            raise ValueError(f"Data file {map_path} must have at least 3 columns "
-                             f"(temperature, heating, cooling). Got shape {raw.shape}.")
+        if raw_data.ndim != 2 or raw_data.shape[1] < 4:
+            raise ValueError(f"Data file {map_path} must have at least 43 columns "
+                             f"(temperature, heating, cooling, mu). Got shape {raw_data.shape}.")
 
         temp_vals = raw_data[:, 0].astype(float)
         heat_vals = raw_data[:, 1].astype(float)
         cool_vals = raw_data[:, 2].astype(float)
+        mmw_vals  = raw_data[:, 3].astype(float)
+
+        if np.any(temp_vals <= 0.0):
+            raise ValueError(f'Non-positive temperatures detected in {map_path}')
+        
+        if np.any(mmw_vals <= 0.0):
+            raise ValueError(f'Non-positive MMW values detected in {map_path}')
 
         hden_val = 10.0 ** float(hden_log)
-        hden_vals = np.full(temp_vals.shape, hden_val, dtype=float)
+        hden_vals = np.full(temp_vals.shape, hden_val, dtype=np.float64)
 
-        return np.column_stack((hden_vals, temp_vals, heat_vals, cool_vals))
+        return np.column_stack((hden_vals, temp_vals, heat_vals, cool_vals, mmw_vals))
 
     def write_table(self, outdir: str | Path = '.', outfile: str | None = None) -> Path:
         """
@@ -90,7 +98,7 @@ class HeatingCoolingTable:
         if not outdir.exists():
             outdir.mkdir(parents=True, exist_ok=True)
 
-        print(f'Generating heating/cooling table from {runfile.name} to {outpath}...')
+        logger.info(f'Generating heating/cooling table from {runfile.name} to {outpath}...')
 
         with open(runfile, 'r', encoding='utf-8') as f:
             lines = [line.strip() for line in f]
@@ -101,9 +109,13 @@ class HeatingCoolingTable:
             raise ValueError(f'Invalid format: Missing "#run" marker in {runfile}.')
 
         n_runs = len(lines) - run_idx - 1
+
+        if n_runs <= 0:
+            raise ValueError(f'No runs detected in {runfile}')
+
         hden_grid = np.linspace(-9, 4, n_runs)
 
-        header = "HDEN[cm^-3]  TEMPERATURE[K]  HEATING[erg_cm^3_s^-1]  COOLING[erg_cm^3_s^-1]"
+        header = "HDEN[cm^-3]  TEMPERATURE[K]  HEATING[erg_cm^3_s^-1]  COOLING[erg_cm^3_s^-1] MMW[amu]"
 
         with open(outpath, 'w', encoding='utf-8') as f_out:
             f_out.write(f'{header}\n')
@@ -116,6 +128,6 @@ class HeatingCoolingTable:
 
                 data = self._process_map(map_path, hden_grid[i])
 
-                np.savetxt(f_out, data, fmt=['%.7E', '%.7E', '%.7E', '%.7E'], delimiter='  ')
+                np.savetxt(f_out, data, fmt=['%.7E', '%.7E', '%.7E', '%.7E', '%.7E'], delimiter='  ')
 
         return outpath

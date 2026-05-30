@@ -49,7 +49,7 @@ class ParameterFiles:
                 self.hden_step = 0.5
             case 'HIGH':
                 self.tpoints = 321
-                self.hden_step = 0.125
+                self.hden_step = 0.05
             case _:
                 raise ValueError(f'Resolution must be "LOW" or "HIGH". Got {resolution}.')
 
